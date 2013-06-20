@@ -11,6 +11,9 @@ PSD is very complicated and hard to parse.  SQLite is everywhere and easy to use
 
 The goal is to make in unnecessary to parse bytes to get to layer data.
 
+# Mailing list
+http://groups.google.com/group/lift-dev
+
 # Schema
 
 
