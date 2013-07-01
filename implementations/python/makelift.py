@@ -4,8 +4,9 @@ from PIL import Image
 
 l = Lift.LiftImage()
 
-outPath = sys.argv[1]
+l.setColorProfile(Lift.ICCsRGBProfileData())
 
+outPath = sys.argv[1]
 
 for imageFile in sys.argv[2:]:
     
@@ -15,17 +16,17 @@ for imageFile in sys.argv[2:]:
         continue
     
     layer = Lift.LiftLayer()
-
+    
     f = open(imageFile, 'rb')
     data = f.read()
     f.close()
 
     layer.setLayerData(data)
     layer.setUTI(layerUTI)
-
+    
     # get the width and height of the image using PIL
     im = Image.open(imageFile)
-
+    
     layer.frame = (0, 0, im.size[0], im.size[1])
     
     l.addLayer(layer)
