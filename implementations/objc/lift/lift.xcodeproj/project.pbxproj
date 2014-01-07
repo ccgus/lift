@@ -1,0 +1,310 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CC80EB80187CA0FF00C8123D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC80EB7F187CA0FF00C8123D /* Foundation.framework */; };
+		CC80EB83187CA0FF00C8123D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CC80EB82187CA0FF00C8123D /* main.m */; };
+		CC80EB87187CA0FF00C8123D /* lift.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = CC80EB86187CA0FF00C8123D /* lift.1 */; };
+		CC80EB8F187CA17A00C8123D /* LFTImage.m in Sources */ = {isa = PBXBuildFile; fileRef = CC80EB8E187CA17A00C8123D /* LFTImage.m */; };
+		CC80EB92187CA1D500C8123D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC80EB91187CA1D500C8123D /* Cocoa.framework */; };
+		CC80EB94187CA1E500C8123D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC80EB93187CA1E500C8123D /* QuartzCore.framework */; };
+		CC80EB9E187CA40C00C8123D /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = CC80EB97187CA40C00C8123D /* FMDatabase.m */; };
+		CC80EB9F187CA40C00C8123D /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CC80EB99187CA40C00C8123D /* FMDatabaseAdditions.m */; };
+		CC80EBA0187CA40C00C8123D /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = CC80EB9B187CA40C00C8123D /* FMDatabaseQueue.m */; };
+		CC80EBA1187CA40C00C8123D /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = CC80EB9D187CA40C00C8123D /* FMResultSet.m */; };
+		CC80EBA3187CA4E300C8123D /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CC80EBA2187CA4E300C8123D /* libsqlite3.0.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CC80EB7A187CA0FF00C8123D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				CC80EB87187CA0FF00C8123D /* lift.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		CC80EB7C187CA0FF00C8123D /* lift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = lift; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC80EB7F187CA0FF00C8123D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		CC80EB82187CA0FF00C8123D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		CC80EB85187CA0FF00C8123D /* lift-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "lift-Prefix.pch"; sourceTree = "<group>"; };
+		CC80EB86187CA0FF00C8123D /* lift.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = lift.1; sourceTree = "<group>"; };
+		CC80EB8D187CA17A00C8123D /* LFTImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LFTImage.h; sourceTree = "<group>"; };
+		CC80EB8E187CA17A00C8123D /* LFTImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LFTImage.m; sourceTree = "<group>"; };
+		CC80EB90187CA1B700C8123D /* Lift.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lift.h; sourceTree = "<group>"; };
+		CC80EB91187CA1D500C8123D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		CC80EB93187CA1E500C8123D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		CC80EB96187CA40C00C8123D /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
+		CC80EB97187CA40C00C8123D /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
+		CC80EB98187CA40C00C8123D /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		CC80EB99187CA40C00C8123D /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		CC80EB9A187CA40C00C8123D /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
+		CC80EB9B187CA40C00C8123D /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
+		CC80EB9C187CA40C00C8123D /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
+		CC80EB9D187CA40C00C8123D /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
+		CC80EBA2187CA4E300C8123D /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CC80EB79187CA0FF00C8123D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC80EB92187CA1D500C8123D /* Cocoa.framework in Frameworks */,
+				CC80EB80187CA0FF00C8123D /* Foundation.framework in Frameworks */,
+				CC80EBA3187CA4E300C8123D /* libsqlite3.0.dylib in Frameworks */,
+				CC80EB94187CA1E500C8123D /* QuartzCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CC80EB73187CA0FF00C8123D = {
+			isa = PBXGroup;
+			children = (
+				CC80EB95187CA40C00C8123D /* fmdb */,
+				CC80EB81187CA0FF00C8123D /* lift */,
+				CC80EB7E187CA0FF00C8123D /* Frameworks */,
+				CC80EB7D187CA0FF00C8123D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CC80EB7D187CA0FF00C8123D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CC80EB7C187CA0FF00C8123D /* lift */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CC80EB7E187CA0FF00C8123D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CC80EBA2187CA4E300C8123D /* libsqlite3.0.dylib */,
+				CC80EB93187CA1E500C8123D /* QuartzCore.framework */,
+				CC80EB91187CA1D500C8123D /* Cocoa.framework */,
+				CC80EB7F187CA0FF00C8123D /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CC80EB81187CA0FF00C8123D /* lift */ = {
+			isa = PBXGroup;
+			children = (
+				CC80EB82187CA0FF00C8123D /* main.m */,
+				CC80EB90187CA1B700C8123D /* Lift.h */,
+				CC80EB8D187CA17A00C8123D /* LFTImage.h */,
+				CC80EB8E187CA17A00C8123D /* LFTImage.m */,
+				CC80EB86187CA0FF00C8123D /* lift.1 */,
+				CC80EB84187CA0FF00C8123D /* Supporting Files */,
+			);
+			path = lift;
+			sourceTree = "<group>";
+		};
+		CC80EB84187CA0FF00C8123D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CC80EB85187CA0FF00C8123D /* lift-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		CC80EB95187CA40C00C8123D /* fmdb */ = {
+			isa = PBXGroup;
+			children = (
+				CC80EB96187CA40C00C8123D /* FMDatabase.h */,
+				CC80EB97187CA40C00C8123D /* FMDatabase.m */,
+				CC80EB98187CA40C00C8123D /* FMDatabaseAdditions.h */,
+				CC80EB99187CA40C00C8123D /* FMDatabaseAdditions.m */,
+				CC80EB9A187CA40C00C8123D /* FMDatabaseQueue.h */,
+				CC80EB9B187CA40C00C8123D /* FMDatabaseQueue.m */,
+				CC80EB9C187CA40C00C8123D /* FMResultSet.h */,
+				CC80EB9D187CA40C00C8123D /* FMResultSet.m */,
+			);
+			path = fmdb;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CC80EB7B187CA0FF00C8123D /* lift */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC80EB8A187CA0FF00C8123D /* Build configuration list for PBXNativeTarget "lift" */;
+			buildPhases = (
+				CC80EB78187CA0FF00C8123D /* Sources */,
+				CC80EB79187CA0FF00C8123D /* Frameworks */,
+				CC80EB7A187CA0FF00C8123D /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = lift;
+			productName = lift;
+			productReference = CC80EB7C187CA0FF00C8123D /* lift */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CC80EB74187CA0FF00C8123D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Flying Meat Inc.";
+			};
+			buildConfigurationList = CC80EB77187CA0FF00C8123D /* Build configuration list for PBXProject "lift" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = CC80EB73187CA0FF00C8123D;
+			productRefGroup = CC80EB7D187CA0FF00C8123D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CC80EB7B187CA0FF00C8123D /* lift */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CC80EB78187CA0FF00C8123D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC80EBA1187CA40C00C8123D /* FMResultSet.m in Sources */,
+				CC80EBA0187CA40C00C8123D /* FMDatabaseQueue.m in Sources */,
+				CC80EB9E187CA40C00C8123D /* FMDatabase.m in Sources */,
+				CC80EB8F187CA17A00C8123D /* LFTImage.m in Sources */,
+				CC80EB83187CA0FF00C8123D /* main.m in Sources */,
+				CC80EB9F187CA40C00C8123D /* FMDatabaseAdditions.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CC80EB88187CA0FF00C8123D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.8;
+			};
+			name = Debug;
+		};
+		CC80EB89187CA0FF00C8123D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx10.8;
+			};
+			name = Release;
+		};
+		CC80EB8B187CA0FF00C8123D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "lift/lift-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		CC80EB8C187CA0FF00C8123D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "lift/lift-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CC80EB77187CA0FF00C8123D /* Build configuration list for PBXProject "lift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC80EB88187CA0FF00C8123D /* Debug */,
+				CC80EB89187CA0FF00C8123D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC80EB8A187CA0FF00C8123D /* Build configuration list for PBXNativeTarget "lift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC80EB8B187CA0FF00C8123D /* Debug */,
+				CC80EB8C187CA0FF00C8123D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CC80EB74187CA0FF00C8123D /* Project object */;
+}
