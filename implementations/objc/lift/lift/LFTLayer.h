@@ -1,5 +1,5 @@
 //
-//  LFTImage.h
+//  LFTLayer.h
 //  lift
 //
 //  Created by August Mueller on 1/7/14.
@@ -8,12 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#ifndef debug
-    #define debug NSLog
-#endif
-
-@interface LFTImage : NSObject
-
-+ (id)imageWithContentsOfURL:(NSURL*)u;
+@interface LFTLayer : NSObject
 
 @end
