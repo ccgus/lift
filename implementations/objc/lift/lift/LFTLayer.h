@@ -7,7 +7,27 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "FMDatabase.h"
 
-@interface LFTLayer : NSObject
+@interface LFTLayer : NSObject {
+    
+}
+
+@property (strong) NSString *layerId;
+@property (strong) NSString *parentLayerId;
+@property (strong) NSString *layerUTI;
+@property (strong) NSString *layerName;
+@property (strong) NSString *blendMode;
+
+@property (assign) BOOL visible;
+@property (assign) BOOL locked;
+
+@property (assign) CGFloat opacity;
+
+@property (assign) NSRect frame;
+
+- (void)readFromDatabase:(FMDatabase*)db;
+
+- (CGImageRef)CGImage;
 
 @end

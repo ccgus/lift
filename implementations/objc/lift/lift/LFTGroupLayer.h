@@ -1,5 +1,5 @@
 //
-//  LFTLayerGroup.h
+//  LFTGroupLayer.h
 //  lift
 //
 //  Created by August Mueller on 1/7/14.
@@ -8,6 +8,10 @@
 
 #import "LFTLayer.h"
 
-@interface LFTLayerGroup : LFTLayer
+@interface LFTGroupLayer : LFTLayer
+
+@property (assign) BOOL isBase;
+
+- (NSArray*)layers;
 
 @end

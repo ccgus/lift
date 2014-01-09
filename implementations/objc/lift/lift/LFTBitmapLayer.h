@@ -10,4 +10,6 @@
 
 @interface LFTBitmapLayer : LFTLayer
 
+- (void)setCGImage:(CGImageRef)img;
+
 @end

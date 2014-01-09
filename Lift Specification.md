@@ -16,11 +16,11 @@ The image_attributes table is a key value store for attributes on the image.  Th
 
 **imageSize**: This is used to store the dimensions of the image in the format {width,height}.  For example, '{900,600}' would the the size of an image that is 900 pixels wide and 600 pixels high.
 
-**bitsPerComponent**: A single signed integer storing the number of bits used per component in the image.
+**bitsPerComponent**: A single unsigned integer storing the number of bits used per component in the image.
 
-**bitsPerPixel**: A single signed integer storing the number of bits per pixel for the image.
+**bitsPerPixel**: A single unsigned integer storing the number of bits per pixel for the image.
 
-**colorProfile**: The ICC profile data for the image.
+**iccColorProfile**: The ICC profile data for the image.
 
 **Optional rows for image_attributes**
 **composite**: A composite of all the visible layers stored as a tiff or png image.
@@ -50,12 +50,12 @@ If the layer data is proprietary, then you would come up with your own UTI.  For
 `create table layer_attributes (id text, name text, value blob)`  
 The layer_attributes table stores key value information for a single layer.
 
-### Required rows for image_attributes
+### Required rows for layer_attributes
 
 **frame**: If the layer is a bitmap (such as TIFF or PNG) then a frame key is required.  It is a string in the format of {xOrigin, yOrigin, width, height}.  For example: {0, 0, 800, 600} or {-10, 46, 100, 1230}.  
 *Spec Note* - maybe this should be optional, and default to a origin of 0,0 and width/height of the layer image if the frame is not present?
 
-### Optional rows for image_attributes
+### Optional rows for layer_attributes
 
 **visible**: A boolean value (1|0) which lets an app know if the layer should be composited with the rest of the layers.
 

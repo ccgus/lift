@@ -7,13 +7,25 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "LFTGroupLayer.h"
 
 #ifndef debug
     #define debug NSLog
 #endif
 
-@interface LFTImage : NSObject
+@interface LFTImage : NSObject {
+    
+}
 
-+ (id)imageWithContentsOfURL:(NSURL*)u;
+@property (assign) NSSize           imageSize;
+@property (assign) NSUInteger       bitsPerComponent;
+@property (assign) NSUInteger       bitsPerPixel;
+@property (assign) NSSize           dpi;
+@property (assign) CGColorSpaceRef  colorSpace;
+@property (strong) NSString         *creatorSoftware;
+
++ (instancetype)imageWithContentsOfURL:(NSURL*)u error:(NSError**)err;
+
+- (LFTGroupLayer*)baseGroupLayer;
 
 @end
