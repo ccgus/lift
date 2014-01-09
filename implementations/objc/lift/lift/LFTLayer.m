@@ -18,41 +18,58 @@
         _locked     = NO;
         _blendMode  = @"normal";
         _visible    = YES;
+        
+        _layerId    = [[[NSUUID UUID] UUIDString] lowercaseString];
+        
 	}
     
 	return self;
 }
 
 
+NSString *LFTLayerVisibleDatabaseTag    = @"visible";
+NSString *LFTLayerLockedDatabaseTag     = @"locked";
+NSString *LFTLayerBlendModeDatabaseTag  = @"blendMode";
+NSString *LFTLayerOpacityDatabaseTag    = @"opacity";
 
 - (void)readFromDatabase:(FMDatabase*)db {
     
     
     /* Optional stuff */
     
-    NSString *visible   = [db stringForLayerAttribute:@"visible" withId:[self layerId]];
+    NSString *visible   = [db stringForLayerAttribute:LFTLayerVisibleDatabaseTag withId:[self layerId]];
     if (visible) {
         [self setVisible:[visible boolValue]];
     }
     
-    NSString *locked    = [db stringForLayerAttribute:@"locked" withId:[self layerId]];
+    NSString *locked    = [db stringForLayerAttribute:LFTLayerLockedDatabaseTag withId:[self layerId]];
     if (locked) {
         [self setLocked:[locked boolValue]];
     }
     
-    NSString *blendMode = [db stringForLayerAttribute:@"blendMode" withId:[self layerId]];
+    NSString *blendMode = [db stringForLayerAttribute:LFTLayerBlendModeDatabaseTag withId:[self layerId]];
     if (blendMode) {
         [self setBlendMode:blendMode];
     }
     
-    NSString *opacity   = [db stringForLayerAttribute:@"opacity" withId:[self layerId]];
+    NSString *opacity   = [db stringForLayerAttribute:LFTLayerOpacityDatabaseTag withId:[self layerId]];
     if (opacity) {
         [self setOpacity:[opacity doubleValue]];
     }
     
 }
 
-
+- (void)writeToDatabase:(FMDatabase*)db {
+    
+    
+    [db setLayerAttribute:LFTLayerVisibleDatabaseTag   value:@([self visible])  withId:[self layerId]];
+    [db setLayerAttribute:LFTLayerLockedDatabaseTag    value:@([self locked])   withId:[self layerId]];
+    [db setLayerAttribute:LFTLayerBlendModeDatabaseTag value:[self blendMode]   withId:[self layerId]];
+    [db setLayerAttribute:LFTLayerOpacityDatabaseTag   value:@([self opacity])  withId:[self layerId]];
+    
+    
+    
+}
 
 - (CGImageRef)CGImage {
     return nil;

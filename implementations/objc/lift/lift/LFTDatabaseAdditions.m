@@ -65,7 +65,7 @@
     [self executeUpdate:@"delete from layer_attributes where name = ? and id = ?", attName, layerId];
     
     if (value) {
-        [self executeUpdate:@"insert into layer_attributes (id, name, value) values (?,?)", layerId, attName, value];
+        [self executeUpdate:@"insert into layer_attributes (id, name, value) values (?,?,?)", layerId, attName, value];
     }
 }
 

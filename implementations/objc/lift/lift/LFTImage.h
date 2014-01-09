@@ -28,4 +28,6 @@
 
 - (LFTGroupLayer*)baseGroupLayer;
 
+- (BOOL)writeToURL:(NSURL*)url  error:(NSError**)err;
+
 @end

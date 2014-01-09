@@ -24,11 +24,13 @@
 }
 
 
+NSString *LFTLayerFrameDatabaseTag    = @"frame";
+
 - (void)readFromDatabase:(FMDatabase*)db {
 
     [super readFromDatabase:db];
     
-    NSString *frame = [db stringForLayerAttribute:@"frame" withId:[self layerId]];
+    NSString *frame = [db stringForLayerAttribute:LFTLayerFrameDatabaseTag withId:[self layerId]];
     
     if (!frame) {
         #pragma message "FIXME: return an error here."
@@ -75,6 +77,41 @@
         return;
     }
     
+    
+}
+
+- (void)writeToDatabase:(FMDatabase *)db {
+    [super writeToDatabase:db];
+    
+    assert([self CGImage]);
+    
+    if (![self CGImage]) {
+        NSLog(@"%s:%d", __FUNCTION__, __LINE__);
+        NSLog(@"empty image");
+        return;
+    }
+    
+    
+    NSDictionary *compOptions = @{(id)kCGImagePropertyTIFFCompression: @(NSTIFFCompressionLZW)};
+    NSDictionary *props       = @{(id)kCGImagePropertyTIFFDictionary: compOptions};
+    
+    NSMutableData *layerData = [NSMutableData data];
+    CGImageDestinationRef imageDestination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)layerData, kUTTypeTIFF, 1, (__bridge CFDictionaryRef)props);
+    
+    if (!imageDestination) {
+        NSLog(@"%s:%d", __FUNCTION__, __LINE__);
+        NSLog(@"Could not make image destination for saving to database");
+        return;
+    }
+    
+    CGImageDestinationAddImage(imageDestination, [self CGImage], (__bridge CFDictionaryRef)props);
+    CGImageDestinationFinalize(imageDestination);
+    CFRelease(imageDestination);
+    
+    [db executeUpdate:@"delete from layers where id = ?", [self layerId]];
+    [db executeUpdate:@"insert into layers (id, parent_id, uti, name, data) values (?,?,?,?,?)", [self layerId], [self parentLayerId], kUTTypeTIFF, [self layerName], layerData];
+    
+    [db setLayerAttribute:LFTLayerFrameDatabaseTag value:NSStringFromRect([self frame]) withId:[self layerId]];
     
 }
 

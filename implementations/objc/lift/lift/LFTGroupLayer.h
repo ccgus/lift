@@ -14,4 +14,6 @@
 
 - (NSArray*)layers;
 
+- (void)addLayer:(LFTLayer*)l;
+
 @end

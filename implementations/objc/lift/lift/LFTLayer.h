@@ -27,6 +27,7 @@
 @property (assign) NSRect frame;
 
 - (void)readFromDatabase:(FMDatabase*)db;
+- (void)writeToDatabase:(FMDatabase*)db;
 
 - (CGImageRef)CGImage;
 

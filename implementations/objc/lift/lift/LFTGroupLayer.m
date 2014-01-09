@@ -98,4 +98,44 @@
     
 }
 
+- (void)writeToDatabase:(FMDatabase*)db {
+    
+    if (!_isBase) {
+        [super writeToDatabase:db];
+        
+        #pragma message "FIXME: we need to add a group uti to the docs."
+        
+        NSString *groupUTI = @"org.liftimage.grouplayer";
+        
+        [db executeUpdate:@"delete from layers where id = ?", [self layerId]];
+        [db executeUpdate:@"insert into layers (id, parent_id, uti, name) values (?,?,?,?)", [self layerId], [self parentLayerId], groupUTI, [self layerName]];
+    }
+    
+    NSUInteger layerIdx = 0;
+    
+    for (LFTLayer *layer in [self layers]) {
+        
+        // do this every time, just cuz I'm paranoid.
+        [layer setParentLayerId:_isBase ? nil : [self layerId]];
+        
+        [layer writeToDatabase:db];
+        
+        [db executeUpdate:@"update layers set sequence = ? where id = ?", [NSNumber numberWithUnsignedInteger:layerIdx], [layer layerId]];
+        
+        layerIdx++;
+        
+        /*
+        if ([layer mask]) {
+            [[layer mask] setParentLayerId:[NSString stringWithFormat:@"mask-%@", [layer layerId]]];
+            [[layer mask] writeToDatabase:db];
+        }
+        */
+    }
+    
+}
+
+- (void)addLayer:(LFTLayer*)l {
+    [_layers addObject:l];
+}
+
 @end

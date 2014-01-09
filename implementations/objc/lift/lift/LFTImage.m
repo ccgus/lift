@@ -111,6 +111,40 @@ NSString *LFTImageCreatorSoftwareTag    = @"creatorSoftware";
 
 - (void)setupTables {
     
+    [_q inDatabase:^(FMDatabase *db) {
+        
+        /*
+        if (FMIsSandboxed()) {
+            // need to turn off journaling for sandboxing.
+            FMResultSet *journalStatement = [_storeDb executeQuery:@"PRAGMA journal_mode=MEMORY"];
+            while ([journalStatement next]) { ; } // for some reason, sqlite needs this.
+        }
+        */
+        
+        FMResultSet *rs = [db executeQuery:@"select name from SQLITE_MASTER where name = 'image_attributes'"];
+        if (![rs next]) {
+            
+            [db stringForQuery:[NSString stringWithFormat:@"PRAGMA page_size = %d", 8192]];
+            
+            [db beginTransaction];
+            
+            [db executeUpdate:@"create table image_attributes (name text, value blob)"];
+            [db executeUpdate:@"create table layers (id text, parent_id text, sequence integer, uti text, name text, data blob)"];
+            [db executeUpdate:@"create table layer_attributes ( id text, name text, value blob)"];
+            
+            if ([db lastErrorCode] != SQLITE_OK) {
+                NSBeep();
+                NSLog(@"Can't create the lift database at %@", [self databaseURL]);
+            }
+            
+            [db commit];
+            
+        }
+        else {
+            [rs close];
+        }
+        
+    }];
 }
 
 - (BOOL)databaseIsValid {
@@ -207,7 +241,7 @@ NSString *LFTImageCreatorSoftwareTag    = @"creatorSoftware";
             return;
         }
         
-        _bitsPerPixel = [db intForImageAttribute:LFTImageBitsPerComponentTag];
+        _bitsPerPixel = [db intForImageAttribute:LFTImageBitsPerPixelTag];
         if (!_bitsPerPixel) {
             
             if (err) {
@@ -232,15 +266,55 @@ NSString *LFTImageCreatorSoftwareTag    = @"creatorSoftware";
         
         [_baseGroup readFromDatabase:db];
         
-        
-        
-        
-        
-        
     }];
     
     return goodRead;
 }
+
+- (BOOL)writeToURL:(NSURL*)url  error:(NSError**)err {
+    
+    [self setDatabaseURL:url];
+    
+    if (![self openImage]) {
+        [self close];
+        
+        if (err) {
+            *err = [NSError errorWithDomain:@"org.liftimage.lift" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Could not open database for writing"}];
+        }
+        
+        return NO;
+    }
+    
+    [self setupTables];
+    
+    
+    #pragma message "FIXME: make sure our size and such are valid."
+    
+    
+    [_q inDatabase:^(FMDatabase *db) {
+    
+        [db setImageAttribute:LFTImageSizeDatabaseTag withValue:NSStringFromSize([self imageSize])];
+        
+        NSData *iccData = CFBridgingRelease(CGColorSpaceCopyICCProfile([self colorSpace]));
+        if (iccData) {
+            [db setImageAttribute:LFTImageColorProfileTag withValue:iccData];
+        }
+        
+        
+        [db setImageAttribute:LFTImageBitsPerComponentTag withValue:@([self bitsPerComponent])];
+        [db setImageAttribute:LFTImageBitsPerPixelTag withValue:@([self bitsPerPixel])];
+        [db setImageAttribute:NSStringFromSize([self dpi]) withValue:LFTImageDPITag];
+        
+        [db setImageAttribute:LFTImageCreatorSoftwareTag withValue:[self creatorSoftware]];
+        
+        [_baseGroup writeToDatabase:db];
+    }];
+    
+    
+    
+    return YES;
+}
+
 
 - (LFTGroupLayer*)baseGroupLayer {
     return _baseGroup;
