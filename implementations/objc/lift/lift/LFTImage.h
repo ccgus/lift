@@ -13,6 +13,11 @@
     #define debug NSLog
 #endif
 
+
+extern NSString *kUTTypeLiftImage;
+extern NSString *kUTTypeLiftGroupLayer;
+
+
 @interface LFTImage : NSObject {
     
 }
@@ -29,5 +34,7 @@
 - (LFTGroupLayer*)baseGroupLayer;
 
 - (BOOL)writeToURL:(NSURL*)url  error:(NSError**)err;
+
+- (NSString*)debugDescription;
 
 @end

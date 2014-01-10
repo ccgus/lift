@@ -6,8 +6,10 @@
 //  Copyright (c) 2014 Flying Meat Inc. All rights reserved.
 //
 
+#import "Lift.h"
 #import "LFTGroupLayer.h"
 #import "LFTBitmapLayer.h"
+
 
 @interface LFTGroupLayer ()
 
@@ -21,10 +23,24 @@
 	self = [super init];
 	if (self != nil) {
 		_layers = [NSMutableArray array];
+        [self setLayerUTI:kUTTypeLiftGroupLayer];
 	}
 	return self;
 }
 
+- (LFTLayer*)makeEmptyLayerForUTI:(NSString*)uti {
+    
+#pragma message "FIXME: ask a delegate for a layer subclass?  And then if we still don't have one, then make our own."
+    
+    if ([uti isEqualToString:kUTTypeLiftGroupLayer]) {
+        return [[LFTGroupLayer alloc] init];
+    }
+    else if (UTTypeConformsTo((__bridge CFStringRef)uti, kUTTypeImage)) {
+        return [[LFTBitmapLayer alloc] init];
+    }
+    
+    return [[LFTLayer alloc] init];
+}
 
 - (void)readFromDatabase:(FMDatabase*)db {
 
@@ -54,17 +70,8 @@
         
         debug(@"name: '%@'", name);
         
-        LFTLayer *layer = nil;
+        LFTLayer *layer = [self makeEmptyLayerForUTI:uti];;
         
-        
-#pragma message "FIXME: ask a delegate for a layer subclass?  And then if we still don't have one, then make our own."
-        
-        if (UTTypeConformsTo((__bridge CFStringRef)uti, kUTTypeImage)) {
-            layer = [[LFTBitmapLayer alloc] init];
-        }
-        else {
-            layer = [[LFTLayer alloc] init];
-        }
         
         [layer setLayerId:uuid];
         [layer setLayerUTI:uti];
@@ -105,10 +112,8 @@
         
         #pragma message "FIXME: we need to add a group uti to the docs."
         
-        NSString *groupUTI = @"org.liftimage.grouplayer";
-        
         [db executeUpdate:@"delete from layers where id = ?", [self layerId]];
-        [db executeUpdate:@"insert into layers (id, parent_id, uti, name) values (?,?,?,?)", [self layerId], [self parentLayerId], groupUTI, [self layerName]];
+        [db executeUpdate:@"insert into layers (id, parent_id, uti, name) values (?,?,?,?)", [self layerId], [self parentLayerId], [self layerUTI], [self layerName]];
     }
     
     NSUInteger layerIdx = 0;
@@ -137,5 +142,20 @@
 - (void)addLayer:(LFTLayer*)l {
     [_layers addObject:l];
 }
+
+- (void)writeToDebugString:(NSMutableString*)s depth:(NSInteger)d {
+    
+    for (NSInteger i = 0; i < d; i++) {
+        [s appendString:@"-"];
+    }
+    
+    [s appendFormat:@"%@ %@ %@ %@\n", self, _isBase ? @"BASE" : [self layerName], [self layerUTI], [self layerId]];
+    
+    for (LFTLayer *layer in [self layers]) {
+        [layer writeToDebugString:s depth:d+1];
+    }
+    
+}
+
 
 @end

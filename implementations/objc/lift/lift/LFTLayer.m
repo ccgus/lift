@@ -8,6 +8,13 @@
 
 #import "LFTLayer.h"
 #import "LFTDatabaseAdditions.h"
+
+@interface LFTLayer ()
+
+@property (strong) NSMutableDictionary *atts;
+
+@end
+
 @implementation LFTLayer
 
 - (id)init {
@@ -21,6 +28,8 @@
         
         _layerId    = [[[NSUUID UUID] UUIDString] lowercaseString];
         
+        _atts       = [NSMutableDictionary dictionary];
+        
 	}
     
 	return self;
@@ -32,34 +41,68 @@ NSString *LFTLayerLockedDatabaseTag     = @"locked";
 NSString *LFTLayerBlendModeDatabaseTag  = @"blendMode";
 NSString *LFTLayerOpacityDatabaseTag    = @"opacity";
 
-- (void)readFromDatabase:(FMDatabase*)db {
-    
+- (void)setValue:(id)value forAttribute:(NSString*)attributeName {
     
     /* Optional stuff */
     
-    NSString *visible   = [db stringForLayerAttribute:LFTLayerVisibleDatabaseTag withId:[self layerId]];
-    if (visible) {
-        [self setVisible:[visible boolValue]];
+    if ([attributeName isEqualToString:LFTLayerVisibleDatabaseTag]) {
+        if ([value isKindOfClass:[NSNumber class]]) {
+            [self setVisible:[value boolValue]];
+        }
+        else {
+            NSLog(@"Invalid class for LFTLayerVisibleDatabaseTag tag %@", NSStringFromClass([value class]));
+        }
+        return;
     }
     
-    NSString *locked    = [db stringForLayerAttribute:LFTLayerLockedDatabaseTag withId:[self layerId]];
-    if (locked) {
-        [self setLocked:[locked boolValue]];
+    if ([attributeName isEqualToString:LFTLayerLockedDatabaseTag]) {
+        if ([value isKindOfClass:[NSNumber class]]) {
+            [self setLocked:[value boolValue]];
+        }
+        else {
+            NSLog(@"Invalid class for LFTLayerLockedDatabaseTag tag %@", NSStringFromClass([value class]));
+        }
+        return;
     }
     
-    NSString *blendMode = [db stringForLayerAttribute:LFTLayerBlendModeDatabaseTag withId:[self layerId]];
-    if (blendMode) {
-        [self setBlendMode:blendMode];
+    if ([attributeName isEqualToString:LFTLayerBlendModeDatabaseTag]) {
+        if ([value isKindOfClass:[NSString class]]) {
+            [self setBlendMode:value];
+        }
+        else {
+            NSLog(@"Invalid class for LFTLayerBlendModeDatabaseTag tag %@", NSStringFromClass([value class]));
+        }
+        return;
     }
     
-    NSString *opacity   = [db stringForLayerAttribute:LFTLayerOpacityDatabaseTag withId:[self layerId]];
-    if (opacity) {
-        [self setOpacity:[opacity doubleValue]];
+    if ([attributeName isEqualToString:LFTLayerOpacityDatabaseTag]) {
+        if ([value isKindOfClass:[NSNumber class]]) {
+            [self setOpacity:[value doubleValue]];
+        }
+        else {
+            NSLog(@"Invalid class for LFTLayerOpacityDatabaseTag tag %@", NSStringFromClass([value class]));
+        }
+        return;
     }
     
+    [self addAttribute:value withKey:attributeName];
+}
+
+
+- (void)readFromDatabase:(FMDatabase*)db {
+    
+    
+    FMResultSet *rs = [db executeQuery:@"select name, value from layer_attributes where id = ?", [self layerId]];
+    
+    while ([rs next]) {
+        [self setValue:[rs objectForColumnIndex:1] forAttribute:[rs stringForColumnIndex:0]];
+    }
 }
 
 - (void)writeToDatabase:(FMDatabase*)db {
+    
+    [db executeUpdate:@"delete from layers where id = ?", [self layerId]];
+    [db executeUpdate:@"delete from layer_attributes where id = ?", [self layerId]];
     
     
     [db setLayerAttribute:LFTLayerVisibleDatabaseTag   value:@([self visible])  withId:[self layerId]];
@@ -67,13 +110,32 @@ NSString *LFTLayerOpacityDatabaseTag    = @"opacity";
     [db setLayerAttribute:LFTLayerBlendModeDatabaseTag value:[self blendMode]   withId:[self layerId]];
     [db setLayerAttribute:LFTLayerOpacityDatabaseTag   value:@([self opacity])  withId:[self layerId]];
     
-    
-    
+    for (NSString *key in [_atts allKeys]) {
+        id value = [_atts objectForKey:key];
+        [db setLayerAttribute:key value:value withId:[self layerId]];
+    }
 }
 
 - (CGImageRef)CGImage {
     return nil;
 }
 
+- (void)addAttribute:(id)attribute withKey:(NSString*)key {
+    [_atts setValue:attribute forKey:key];
+}
+
+- (NSDictionary*)attributes {
+    return _atts;
+}
+
+- (void)writeToDebugString:(NSMutableString*)s depth:(NSInteger)d {
+    
+    for (NSInteger i = 0; i < d; i++) {
+        [s appendString:@"-"];
+    }
+    
+    [s appendFormat:@"%@ %@ %@ %@\n", self, [self layerName], [self layerUTI], [self layerId]];
+    
+}
 
 @end

@@ -26,9 +26,21 @@
 
 @property (assign) NSRect frame;
 
+- (CGImageRef)CGImage;
+
+- (void)addAttribute:(id)attribute withKey:(NSString*)key;
+
+- (NSDictionary*)attributes;
+
+@end
+
+
+@interface LFTLayer (Private)
+
+- (void)writeToDebugString:(NSMutableString*)s depth:(NSInteger)d;
+
 - (void)readFromDatabase:(FMDatabase*)db;
 - (void)writeToDatabase:(FMDatabase*)db;
 
-- (CGImageRef)CGImage;
 
 @end

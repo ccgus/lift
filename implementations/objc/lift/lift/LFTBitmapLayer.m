@@ -17,6 +17,15 @@
 
 @implementation LFTBitmapLayer
 
+- (id)init {
+	self = [super init];
+	if (self != nil) {
+		[self setLayerUTI:(id)kUTTypeTIFF];
+	}
+	return self;
+}
+
+
 - (void)dealloc {
     if (_image) {
         CGImageRelease(_image);
@@ -91,7 +100,6 @@ NSString *LFTLayerFrameDatabaseTag    = @"frame";
         return;
     }
     
-    
     NSDictionary *compOptions = @{(id)kCGImagePropertyTIFFCompression: @(NSTIFFCompressionLZW)};
     NSDictionary *props       = @{(id)kCGImagePropertyTIFFDictionary: compOptions};
     
@@ -108,8 +116,7 @@ NSString *LFTLayerFrameDatabaseTag    = @"frame";
     CGImageDestinationFinalize(imageDestination);
     CFRelease(imageDestination);
     
-    [db executeUpdate:@"delete from layers where id = ?", [self layerId]];
-    [db executeUpdate:@"insert into layers (id, parent_id, uti, name, data) values (?,?,?,?,?)", [self layerId], [self parentLayerId], kUTTypeTIFF, [self layerName], layerData];
+    [db executeUpdate:@"insert into layers (id, parent_id, uti, name, data) values (?,?,?,?,?)", [self layerId], [self parentLayerId], [self layerUTI], [self layerName], layerData];
     
     [db setLayerAttribute:LFTLayerFrameDatabaseTag value:NSStringFromRect([self frame]) withId:[self layerId]];
     

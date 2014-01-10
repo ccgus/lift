@@ -18,6 +18,9 @@ NSString *LFTImageBitsPerComponentTag   = @"bitsPerComponent";
 NSString *LFTImageColorProfileTag       = @"iccColorProfile";
 NSString *LFTImageCreatorSoftwareTag    = @"creatorSoftware";
 
+const NSString *kUTTypeLiftImage      = @"org.liftimage.lift";
+const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
+
 
 @interface LFTImage ()
 
@@ -77,6 +80,9 @@ NSString *LFTImageCreatorSoftwareTag    = @"creatorSoftware";
 }
 
 - (void)dealloc {
+    
+    [self close];
+    
     if (_colorSpace) {
         CGColorSpaceRelease(_colorSpace);
     }
@@ -318,6 +324,14 @@ NSString *LFTImageCreatorSoftwareTag    = @"creatorSoftware";
 
 - (LFTGroupLayer*)baseGroupLayer {
     return _baseGroup;
+}
+
+- (NSString*)debugDescription {
+    NSMutableString *s = [NSMutableString string];
+    
+    [_baseGroup writeToDebugString:s depth:0];
+    
+    return s;
 }
 
 @end
