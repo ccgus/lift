@@ -26,7 +26,9 @@
 
 @property (assign) NSRect frame;
 
-- (CGImageRef)CGImage;
+- (CGImageRef)compositeImage;
+
+- (void)setCompositeImage:(CGImageRef)img;
 
 - (void)addAttribute:(id)attribute withKey:(NSString*)key;
 

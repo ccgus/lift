@@ -135,7 +135,7 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
             [db beginTransaction];
             
             [db executeUpdate:@"create table image_attributes (name text, value blob)"];
-            [db executeUpdate:@"create table layers (id text, parent_id text, sequence integer, uti text, name text, data blob)"];
+            [db executeUpdate:@"create table layers (id text, parent_id text, sequence integer, uti text, name text, composite blob)"];
             [db executeUpdate:@"create table layer_attributes ( id text, name text, value blob)"];
             
             if ([db lastErrorCode] != SQLITE_OK) {

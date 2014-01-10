@@ -8,8 +8,6 @@
 
 #import "Lift.h"
 #import "LFTGroupLayer.h"
-#import "LFTBitmapLayer.h"
-
 
 @interface LFTGroupLayer ()
 
@@ -34,9 +32,6 @@
     
     if ([uti isEqualToString:kUTTypeLiftGroupLayer]) {
         return [[LFTGroupLayer alloc] init];
-    }
-    else if (UTTypeConformsTo((__bridge CFStringRef)uti, kUTTypeImage)) {
-        return [[LFTBitmapLayer alloc] init];
     }
     
     return [[LFTLayer alloc] init];
