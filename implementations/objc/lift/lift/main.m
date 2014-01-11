@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Lift.h"
+#import "LFTImage.h"
 
 int main(int argc, const char * argv[])
 {
@@ -16,7 +17,7 @@ int main(int argc, const char * argv[])
         
         NSString *testImagePath = [@"~/Projects/lift/liftimages/radial gradient.lift" stringByExpandingTildeInPath];
         
-        LFTImage *img = [LFTImage imageWithContentsOfURL:[NSURL fileURLWithPath:testImagePath]];
+        LFTImage *img = [LFTImage imageWithContentsOfURL:[NSURL fileURLWithPath:testImagePath] error:nil];
         
         debug(@"img: '%@'", img);
     }

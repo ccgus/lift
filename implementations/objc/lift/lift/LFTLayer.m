@@ -6,13 +6,16 @@
 //  Copyright (c) 2014 Flying Meat Inc. All rights reserved.
 //
 
+#import <Cocoa/Cocoa.h>
 #import "LFTLayer.h"
 #import "LFTDatabaseAdditions.h"
+#import "LFTImage.h"
 
 @interface LFTLayer ()
 
 @property (strong) NSMutableDictionary *atts;
 @property (assign) CGImageRef image;
+@property (assign) CGImageRef composite;
 
 @end
 
@@ -44,11 +47,13 @@
 
 
 
-NSString *LFTLayerVisibleDatabaseTag    = @"visible";
-NSString *LFTLayerLockedDatabaseTag     = @"locked";
-NSString *LFTLayerBlendModeDatabaseTag  = @"blendMode";
-NSString *LFTLayerOpacityDatabaseTag    = @"opacity";
-NSString *LFTLayerFrameDatabaseTag      = @"frame";
+NSString *LFTLayerVisibleDatabaseTag        = @"visible";
+NSString *LFTLayerLockedDatabaseTag         = @"locked";
+NSString *LFTLayerBlendModeDatabaseTag      = @"blendMode";
+NSString *LFTLayerOpacityDatabaseTag        = @"opacity";
+NSString *LFTLayerFrameDatabaseTag          = @"frame";
+NSString *LFTLayerCompositeDatabaseTag      = @"composite";
+NSString *LFTLayerCompositeUTIDatabaseTag   = @"composite-uti";
 
 
 - (void)setValue:(id)value forAttribute:(NSString*)attributeName {
@@ -116,13 +121,111 @@ NSString *LFTLayerFrameDatabaseTag      = @"frame";
         [self setValue:[rs objectForColumnIndex:1] forAttribute:[rs stringForColumnIndex:0]];
     }
     
-    rs = [db executeQuery:@"select composite from layers where id = ?", [self layerId]];
+    rs = [db executeQuery:@"select data from layers where id = ?", [self layerId]];
     if ([rs next]) {
         
         NSData *data = [rs dataForColumnIndex:0];
         
-        if (data) {
-            CGImageSourceRef imageSourceRef = CGImageSourceCreateWithData((__bridge CFDataRef)data, (__bridge CFDictionaryRef)[NSDictionary dictionary]);
+        [self setLayerData:data];
+        
+        [rs close];
+        
+    }
+}
+
+- (NSData*)layerImageData {
+    
+    if (_layerData) {
+        return _layerData;
+    }
+    
+    if (![self dataImage]) {
+        return nil;
+    }
+    
+    if (![self layerUTI]) {
+        NSLog(@"No layer UTI given for layerImageData");
+        return nil;
+    }
+    
+    
+    NSData *ret = [LFTImage dataFromImage:[self dataImage] withUTI:[self layerUTI]];
+    
+    if (!ret) {
+        NSLog(@"%s:%d", __FUNCTION__, __LINE__);
+        NSLog(@"Could not create layer data for %@ from layerImageData", self);
+    }
+    
+    return ret;
+    
+    
+}
+
+
+- (NSData*)compositeImageData {
+    
+    if (_compositeData) {
+        return _compositeData;
+    }
+    
+    if (![self compositeImage]) {
+        return nil;
+    }
+    
+    if (![self compositeUTI]) {
+        NSLog(@"No composite UTI given for compositeImageData");
+        return nil;
+    }
+    
+    
+    NSData *ret = [LFTImage dataFromImage:[self compositeImage] withUTI:[self compositeUTI]];
+    
+    if (!ret) {
+        NSLog(@"%s:%d", __FUNCTION__, __LINE__);
+        NSLog(@"Could not create composite data for %@ from compositeImage", self);
+    }
+    
+    return ret;
+}
+
+- (void)writeToDatabase:(FMDatabase*)db {
+    
+    [db executeUpdate:@"delete from layers where id = ?", [self layerId]];
+    [db executeUpdate:@"delete from layer_attributes where id = ?", [self layerId]];
+    
+    NSData *imageData = [self layerImageData];
+    
+    if (!imageData) {
+        NSLog(@"Warning: no data given for layer %@", self);
+    }
+    
+    [db executeUpdate:@"insert into layers (id, parent_id, uti, name, data) values (?,?,?,?,?)", [self layerId], [self parentLayerId], [self layerUTI], [self layerName], imageData];
+    
+    [db setLayerAttribute:LFTLayerFrameDatabaseTag value:NSStringFromRect([self frame]) withId:[self layerId]];
+    
+    [db setLayerAttribute:LFTLayerVisibleDatabaseTag   value:@([self visible])  withId:[self layerId]];
+    [db setLayerAttribute:LFTLayerLockedDatabaseTag    value:@([self locked])   withId:[self layerId]];
+    [db setLayerAttribute:LFTLayerBlendModeDatabaseTag value:[self blendMode]   withId:[self layerId]];
+    [db setLayerAttribute:LFTLayerOpacityDatabaseTag   value:@([self opacity])  withId:[self layerId]];
+    
+    NSData *compositeData = [self compositeImageData];
+    if (compositeData) {
+        [db setLayerAttribute:LFTLayerCompositeDatabaseTag   value:compositeData withId:[self layerId]];
+        [db setLayerAttribute:LFTLayerCompositeUTIDatabaseTag value:[self compositeUTI] withId:[self layerUTI]];
+    }
+    
+    for (NSString *key in [_atts allKeys]) {
+        id value = [_atts objectForKey:key];
+        [db setLayerAttribute:key value:value withId:[self layerId]];
+    }
+}
+    
+- (CGImageRef)dataImage {
+    
+    if (!_image) {
+        
+        if (_layerData) {
+            CGImageSourceRef imageSourceRef = CGImageSourceCreateWithData((__bridge CFDataRef)_layerData, (__bridge CFDictionaryRef)[NSDictionary dictionary]);
             
             if (!imageSourceRef) {
                 NSLog(@"Could not make an image from layer %@ / %@", [self layerName], [self layerId]);
@@ -132,68 +235,20 @@ NSString *LFTLayerFrameDatabaseTag      = @"frame";
                 
                 CFRelease(imageSourceRef);
                 
-                [rs close];
-                
                 if (!_image) {
-                    NSLog(@"Invalid image data for %@ - lenght of %ld", [self layerName], [data length]);
-                }
-                else {
-                    [self setCompositeImage:_image];
+                    NSLog(@"Invalid image data for %@ - lenght of %ld", [self layerName], [[self layerImageData] length]);
                 }
             }
         }
-    }
-}
-
-- (void)writeToDatabase:(FMDatabase*)db {
-    
-    [db executeUpdate:@"delete from layers where id = ?", [self layerId]];
-    [db executeUpdate:@"delete from layer_attributes where id = ?", [self layerId]];
-    
-    NSData *imageData = nil;
-    
-    if ([self compositeImage]) {
-        
-        NSDictionary *compOptions = @{(id)kCGImagePropertyTIFFCompression: @(NSTIFFCompressionLZW)};
-        NSDictionary *props       = @{(id)kCGImagePropertyTIFFDictionary: compOptions};
-        
-        NSMutableData *layerData = [NSMutableData data];
-        CGImageDestinationRef imageDestination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)layerData, kUTTypeTIFF, 1, (__bridge CFDictionaryRef)props);
-        
-        if (!imageDestination) {
-            NSLog(@"%s:%d", __FUNCTION__, __LINE__);
-            NSLog(@"Could not make image destination for saving to database");
-            return;
+        else {
+            NSLog(@"Missing image data for %@", self);
         }
-        
-        CGImageDestinationAddImage(imageDestination, [self compositeImage], (__bridge CFDictionaryRef)props);
-        CGImageDestinationFinalize(imageDestination);
-        CFRelease(imageDestination);
-        
-        imageData = layerData;
-        
     }
     
-    [db executeUpdate:@"insert into layers (id, parent_id, uti, name, composite) values (?,?,?,?,?)", [self layerId], [self parentLayerId], [self layerUTI], [self layerName], imageData];
-    
-    [db setLayerAttribute:LFTLayerFrameDatabaseTag value:NSStringFromRect([self frame]) withId:[self layerId]];
-    
-    [db setLayerAttribute:LFTLayerVisibleDatabaseTag   value:@([self visible])  withId:[self layerId]];
-    [db setLayerAttribute:LFTLayerLockedDatabaseTag    value:@([self locked])   withId:[self layerId]];
-    [db setLayerAttribute:LFTLayerBlendModeDatabaseTag value:[self blendMode]   withId:[self layerId]];
-    [db setLayerAttribute:LFTLayerOpacityDatabaseTag   value:@([self opacity])  withId:[self layerId]];
-    
-    for (NSString *key in [_atts allKeys]) {
-        id value = [_atts objectForKey:key];
-        [db setLayerAttribute:key value:value withId:[self layerId]];
-    }
-}
-    
-- (CGImageRef)compositeImage {
     return _image;
 }
 
-- (void)setCompositeImage:(CGImageRef)img {
+- (void)setDataImage:(CGImageRef)img {
     if (_image != img) {
         
         if (_image) {
@@ -203,6 +258,23 @@ NSString *LFTLayerFrameDatabaseTag      = @"frame";
         _image = CGImageRetain(img);
     }
 }
+
+- (CGImageRef)compositeImage {
+    return _composite;
+}
+
+- (void)setCompositeImage:(CGImageRef)img {
+    if (_composite != img) {
+        
+        if (_composite) {
+            CGImageRelease(_composite);
+        }
+        
+        _composite = CGImageRetain(img);
+    }
+}
+
+
 
 - (void)addAttribute:(id)attribute withKey:(NSString*)key {
     [_atts setValue:attribute forKey:key];

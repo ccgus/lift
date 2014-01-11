@@ -15,9 +15,14 @@
 
 @property (strong) NSString *layerId;
 @property (strong) NSString *parentLayerId;
-@property (strong) NSString *layerUTI;
 @property (strong) NSString *layerName;
 @property (strong) NSString *blendMode;
+
+@property (strong) NSString *layerUTI;
+@property (strong) NSData   *layerData;
+
+@property (strong) NSString *compositeUTI;
+@property (strong) NSData   *compositeData;
 
 @property (assign) BOOL visible;
 @property (assign) BOOL locked;
@@ -26,8 +31,11 @@
 
 @property (assign) NSRect frame;
 
-- (CGImageRef)compositeImage;
 
+- (CGImageRef)dataImage;
+- (void)setDataImage:(CGImageRef)img;
+
+- (CGImageRef)compositeImage;
 - (void)setCompositeImage:(CGImageRef)img;
 
 - (void)addAttribute:(id)attribute withKey:(NSString*)key;

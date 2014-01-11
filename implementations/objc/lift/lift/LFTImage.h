@@ -37,4 +37,11 @@ extern NSString *kUTTypeLiftGroupLayer;
 
 - (NSString*)debugDescription;
 
+
+- (void)addAttribute:(id)attribute withKey:(NSString*)key;
+- (NSDictionary*)attributes;
+
++ (NSData*)dataFromImage:(CGImageRef)img withUTI:(NSString*)uti;
+
+
 @end

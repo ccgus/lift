@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		CC68321C187CD365003747EF /* LFTLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = CC68321B187CD365003747EF /* LFTLayer.m */; };
-		CC683222187CD39D003747EF /* LFTBitmapLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = CC683221187CD39D003747EF /* LFTBitmapLayer.m */; };
 		CC80EB80187CA0FF00C8123D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC80EB7F187CA0FF00C8123D /* Foundation.framework */; };
 		CC80EB83187CA0FF00C8123D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CC80EB82187CA0FF00C8123D /* main.m */; };
 		CC80EB87187CA0FF00C8123D /* lift.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = CC80EB86187CA0FF00C8123D /* lift.1 */; };
@@ -40,8 +39,6 @@
 /* Begin PBXFileReference section */
 		CC68321A187CD365003747EF /* LFTLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LFTLayer.h; sourceTree = "<group>"; };
 		CC68321B187CD365003747EF /* LFTLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LFTLayer.m; sourceTree = "<group>"; };
-		CC683220187CD39D003747EF /* LFTBitmapLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LFTBitmapLayer.h; sourceTree = "<group>"; };
-		CC683221187CD39D003747EF /* LFTBitmapLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LFTBitmapLayer.m; sourceTree = "<group>"; };
 		CC80EB7C187CA0FF00C8123D /* lift */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = lift; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC80EB7F187CA0FF00C8123D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CC80EB82187CA0FF00C8123D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -61,10 +58,11 @@
 		CC80EB9C187CA40C00C8123D /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
 		CC80EB9D187CA40C00C8123D /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
 		CC80EBA2187CA4E300C8123D /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
+		CCB5BC5F1881F99600403952 /* status.markdown */ = {isa = PBXFileReference; lastKnownFileType = text; name = status.markdown; path = ../status.markdown; sourceTree = "<group>"; };
 		CCFF2890187F3CD80082BFE4 /* LFTGroupLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LFTGroupLayer.h; sourceTree = "<group>"; };
 		CCFF2891187F3CD80082BFE4 /* LFTGroupLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LFTGroupLayer.m; sourceTree = "<group>"; };
-		CCFF2893187F3CE80082BFE4 /* LFTDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LFTDatabaseAdditions.h; sourceTree = "<group>"; };
-		CCFF2894187F3CE80082BFE4 /* LFTDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LFTDatabaseAdditions.m; sourceTree = "<group>"; };
+		CCFF2893187F3CE80082BFE4 /* LFTDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LFTDatabaseAdditions.h; path = ../lift/LFTDatabaseAdditions.h; sourceTree = "<group>"; };
+		CCFF2894187F3CE80082BFE4 /* LFTDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LFTDatabaseAdditions.m; path = ../lift/LFTDatabaseAdditions.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +83,7 @@
 		CC80EB73187CA0FF00C8123D = {
 			isa = PBXGroup;
 			children = (
+				CCB5BC5F1881F99600403952 /* status.markdown */,
 				CC80EB95187CA40C00C8123D /* fmdb */,
 				CC80EB81187CA0FF00C8123D /* lift */,
 				CC80EB7E187CA0FF00C8123D /* Frameworks */,
@@ -120,14 +119,10 @@
 				CC80EB8E187CA17A00C8123D /* LFTImage.m */,
 				CC68321A187CD365003747EF /* LFTLayer.h */,
 				CC68321B187CD365003747EF /* LFTLayer.m */,
-				CC683220187CD39D003747EF /* LFTBitmapLayer.h */,
-				CC683221187CD39D003747EF /* LFTBitmapLayer.m */,
 				CCFF2890187F3CD80082BFE4 /* LFTGroupLayer.h */,
 				CCFF2891187F3CD80082BFE4 /* LFTGroupLayer.m */,
 				CC80EB86187CA0FF00C8123D /* lift.1 */,
 				CC80EB84187CA0FF00C8123D /* Supporting Files */,
-				CCFF2893187F3CE80082BFE4 /* LFTDatabaseAdditions.h */,
-				CCFF2894187F3CE80082BFE4 /* LFTDatabaseAdditions.m */,
 			);
 			path = lift;
 			sourceTree = "<group>";
@@ -151,6 +146,8 @@
 				CC80EB9B187CA40C00C8123D /* FMDatabaseQueue.m */,
 				CC80EB9C187CA40C00C8123D /* FMResultSet.h */,
 				CC80EB9D187CA40C00C8123D /* FMResultSet.m */,
+				CCFF2893187F3CE80082BFE4 /* LFTDatabaseAdditions.h */,
+				CCFF2894187F3CE80082BFE4 /* LFTDatabaseAdditions.m */,
 			);
 			path = fmdb;
 			sourceTree = "<group>";
@@ -209,7 +206,6 @@
 				CC68321C187CD365003747EF /* LFTLayer.m in Sources */,
 				CC80EBA1187CA40C00C8123D /* FMResultSet.m in Sources */,
 				CC80EBA0187CA40C00C8123D /* FMDatabaseQueue.m in Sources */,
-				CC683222187CD39D003747EF /* LFTBitmapLayer.m in Sources */,
 				CCFF2892187F3CD80082BFE4 /* LFTGroupLayer.m in Sources */,
 				CCFF2895187F3CE80082BFE4 /* LFTDatabaseAdditions.m in Sources */,
 				CC80EB9E187CA40C00C8123D /* FMDatabase.m in Sources */,

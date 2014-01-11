@@ -44,7 +44,7 @@ The data field is the data for the layer.
 
 If the layer data is stored as TIFF then the UTI would be 'public.tiff'.  PNG would be 'public.png'.  It is recommended that the layer data not be stored in a lossy format (such as JPEG).
 
-If the layer data is proprietary, then you would come up with your own UTI.  For instance, Acorn stores its shape layer data in a proprietary format and uses the UTI of 'com.flyingmeat.acorn.shapelayer'.
+If the layer data is proprietary, then you would come up with your own UTI.  For instance, Acorn stores its shape layer data in a proprietary format and uses the UTI of 'com.flyingmeat.acorn.shape-layer'.
 
 # layer_attributes
 `create table layer_attributes (id text, name text, value blob)`  
@@ -68,3 +68,24 @@ The layer_attributes table stores key value information for a single layer.
 ### Vendor Specific Keys
 
 *Note* - maybe the vendor specific keys should use a reverse domain name prefix similar to what UTIs do?
+
+
+
+### Open questions.
+
+**Composite data**  
+If an application which provides features such as non-destructive filters on layers (also known as layer styles), should a composite of the layer be stored as an attribute of the layer?  And if it does, maybe a specific key should be used?  Maybe 'lift.composite' and 'lift.composite-uti' to store the uti of the composite (tiff/jpeg/png)?
+
+**Intercaps, dashes, or underscores?**  
+Table names can't have dashes, but they can have intercaps or underscores.
+Apple's UTIs have dashes in them, and never use intercaps.
+
+SO, should the key for a blend mode be:
+'blendMode'
+'blend_mode'
+'blend-mode'
+
+AND - should it have a lift prefix on it?
+'lift.blend-mode' ?
+
+

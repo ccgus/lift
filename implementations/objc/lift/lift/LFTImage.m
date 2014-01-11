@@ -18,8 +18,8 @@ NSString *LFTImageBitsPerComponentTag   = @"bitsPerComponent";
 NSString *LFTImageColorProfileTag       = @"iccColorProfile";
 NSString *LFTImageCreatorSoftwareTag    = @"creatorSoftware";
 
-const NSString *kUTTypeLiftImage      = @"org.liftimage.lift";
-const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
+NSString *kUTTypeLiftImage      = @"org.liftimage.lift";
+NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
 
 
 @interface LFTImage ()
@@ -28,6 +28,8 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
 @property (strong) NSURL *databaseURL;
 @property (strong) LFTGroupLayer *baseGroup;
 
+@property (strong) NSMutableDictionary *atts;
+@property (assign) CGImageRef compositeImage;
 
 @end
 
@@ -39,6 +41,10 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
 		_dpi = NSMakeSize(72, 72);
         _baseGroup = [[LFTGroupLayer alloc] init];
         [_baseGroup setIsBase:YES];
+        
+        
+        _atts       = [NSMutableDictionary dictionary];
+        
 	}
 	return self;
 }
@@ -54,7 +60,7 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         [img close];
         
         if (err) {
-            *err = [NSError errorWithDomain:@"org.liftimage.lift" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Could not open database"}];
+            *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"Could not open database"}];
         }
         
         return nil;
@@ -64,7 +70,7 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         [img close];
         
         if (err) {
-            *err = [NSError errorWithDomain:@"org.liftimage.lift" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Database is invalid"}];
+            *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"Database is invalid"}];
         }
         
         return nil;
@@ -86,6 +92,11 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
     if (_colorSpace) {
         CGColorSpaceRelease(_colorSpace);
     }
+    
+    if (_compositeImage) {
+        CGImageRelease(_compositeImage);
+    }
+    
 }
 
 
@@ -135,7 +146,7 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
             [db beginTransaction];
             
             [db executeUpdate:@"create table image_attributes (name text, value blob)"];
-            [db executeUpdate:@"create table layers (id text, parent_id text, sequence integer, uti text, name text, composite blob)"];
+            [db executeUpdate:@"create table layers (id text, parent_id text, sequence integer, uti text, name text, data blob)"];
             [db executeUpdate:@"create table layer_attributes ( id text, name text, value blob)"];
             
             if ([db lastErrorCode] != SQLITE_OK) {
@@ -183,6 +194,40 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
 
 
 
+
+
+- (void)setValue:(id)value forAttribute:(NSString*)attributeName {
+    
+    #pragma message "FIXME: move the attribute loads into here,and then checks below."
+    if ([attributeName isEqualToString:LFTImageSizeDatabaseTag]) {
+        return;
+    }
+    if ([attributeName isEqualToString:LFTImageColorProfileTag]) {
+        return;
+    }
+    if ([attributeName isEqualToString:LFTImageBitsPerPixelTag]) {
+        return;
+    }
+    if ([attributeName isEqualToString:LFTImageBitsPerComponentTag]) {
+        return;
+    }
+    if ([attributeName isEqualToString:LFTImageDPITag]) {
+        return;
+    }
+    
+    if ([attributeName isEqualToString:LFTImageCreatorSoftwareTag]) {
+        assert([value isKindOfClass:[NSString class]]);
+        [self setCreatorSoftware:value];
+        return;
+    }
+    
+    
+    [self addAttribute:value withKey:attributeName];
+}
+
+
+
+
 - (BOOL)read:(NSError**)err {
 
 
@@ -190,11 +235,20 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
 
     [_q inDatabase:^(FMDatabase *db) {
         
+        
+        FMResultSet *rs = [db executeQuery:@"select name, value from image_attributes"];
+        
+        while ([rs next]) {
+            [self setValue:[rs objectForColumnIndex:1] forAttribute:[rs stringForColumnIndex:0]];
+        }
+
+        
+        
         NSString *canvasSizeS = [db stringForImageAttribute:LFTImageSizeDatabaseTag];
         
         if (!canvasSizeS) {
             if (err) {
-                *err = [NSError errorWithDomain:@"org.liftimage.lift" code:1 userInfo:@{NSLocalizedDescriptionKey: @"No image size in database"}];
+                *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"No image size in database"}];
             }
             goodRead = NO;
             return;
@@ -205,7 +259,7 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         if (size.width <= 0 || size.height <= 0) {
             if (err) {
                 NSString *errorString = [NSString stringWithFormat:@"Invalid image size: %@", NSStringFromSize(size)];
-                *err = [NSError errorWithDomain:@"org.liftimage.lift" code:1 userInfo:@{NSLocalizedDescriptionKey: errorString}];
+                *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: errorString}];
             }
             goodRead = NO;
             return;
@@ -216,7 +270,7 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         NSData *profileData = [db dataForImageAttribute:LFTImageColorProfileTag];
         if (!profileData) {
             if (err) {
-                *err = [NSError errorWithDomain:@"org.liftimage.lift" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Missing color profile in database"}];
+                *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"Missing color profile in database"}];
             }
             goodRead = NO;
             return;
@@ -228,7 +282,7 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         if (!cs) {
             
             if (err) {
-                *err = [NSError errorWithDomain:@"org.liftimage.lift" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Could not turn color profile icc data into a colorspace"}];
+                *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"Could not turn color profile icc data into a colorspace"}];
             }
             goodRead = NO;
             return;
@@ -241,7 +295,7 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         if (!_bitsPerComponent) {
             
             if (err) {
-                *err = [NSError errorWithDomain:@"org.liftimage.lift" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Bits per component tag is missing or invalid"}];
+                *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"Bits per component tag is missing or invalid"}];
             }
             goodRead = NO;
             return;
@@ -251,7 +305,7 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         if (!_bitsPerPixel) {
             
             if (err) {
-                *err = [NSError errorWithDomain:@"org.liftimage.lift" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Bits per pixel tag is missing or invalid"}];
+                *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"Bits per pixel tag is missing or invalid"}];
             }
             goodRead = NO;
             return;
@@ -261,11 +315,6 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         if (dpi.width > 0 && dpi.height > 0) {
             [self setDpi:dpi];
         }
-        
-        
-        /* Optional Stuff */
-        
-        [self setCreatorSoftware:[db stringForImageAttribute:LFTImageCreatorSoftwareTag]];
         
         
         [_baseGroup setLayerName:[NSString stringWithFormat:@"%@'s base group", [_databaseURL lastPathComponent]]];
@@ -285,7 +334,7 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         [self close];
         
         if (err) {
-            *err = [NSError errorWithDomain:@"org.liftimage.lift" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Could not open database for writing"}];
+            *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"Could not open database for writing"}];
         }
         
         return NO;
@@ -313,6 +362,11 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         
         [db setImageAttribute:LFTImageCreatorSoftwareTag withValue:[self creatorSoftware]];
         
+        for (NSString *key in [_atts allKeys]) {
+            id value = [_atts objectForKey:key];
+            [db setImageAttribute:key withValue:value];
+        }
+        
         [_baseGroup writeToDatabase:db];
     }];
     
@@ -322,8 +376,38 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
 }
 
 
+- (void)addAttribute:(id)attribute withKey:(NSString*)key {
+    [_atts setValue:attribute forKey:key];
+}
+
+- (NSDictionary*)attributes {
+    return _atts;
+}
+
 - (LFTGroupLayer*)baseGroupLayer {
     return _baseGroup;
+}
+
++ (NSData*)dataFromImage:(CGImageRef)img withUTI:(NSString*)uti {
+    
+    NSData *serializedImage   = nil;
+    NSDictionary *compOptions = @{(id)kCGImagePropertyTIFFCompression: @(NSTIFFCompressionLZW)};
+    NSDictionary *props       = @{(id)kCGImagePropertyTIFFDictionary: compOptions};
+    
+    NSMutableData *imageData = [NSMutableData data];
+    CGImageDestinationRef imageDestination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)imageData, (__bridge CFStringRef)uti, 1, (__bridge CFDictionaryRef)props);
+    
+    if (imageDestination) {
+        
+        CGImageDestinationAddImage(imageDestination, img, (__bridge CFDictionaryRef)props);
+        CGImageDestinationFinalize(imageDestination);
+        CFRelease(imageDestination);
+        
+        serializedImage = imageData;
+    }
+    
+    return serializedImage;
+    
 }
 
 - (NSString*)debugDescription {
@@ -333,5 +417,6 @@ const NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
     
     return s;
 }
+
 
 @end

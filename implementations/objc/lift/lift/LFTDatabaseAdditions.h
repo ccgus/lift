@@ -24,9 +24,6 @@
 - (void)setImageAttribute:(NSString*)attName withValue:(id)value;
 
 
-
-
-
 - (NSString*)stringForLayerAttribute:(NSString*)attName withId:(NSString*)layerId;
 
 - (BOOL)boolForLayerAttribute:(NSString*)attName withId:(NSString*)layerId;

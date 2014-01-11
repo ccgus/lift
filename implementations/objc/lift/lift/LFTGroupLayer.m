@@ -63,10 +63,7 @@
             name = @"";
         }
         
-        debug(@"name: '%@'", name);
-        
         LFTLayer *layer = [self makeEmptyLayerForUTI:uti];;
-        
         
         [layer setLayerId:uuid];
         [layer setLayerUTI:uti];
