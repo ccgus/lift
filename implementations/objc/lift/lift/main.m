@@ -11,6 +11,7 @@
 #import "LFTImage.h"
 
 
+#define MAX_DEPTH 3
 static NSSize maxSize;
 static CGColorSpaceRef firstColorspaceWeCameAcross;
 
@@ -40,7 +41,7 @@ CGImageRef createCGImageFromPath(NSString *path) {
     
 }
 
-void addImagesFromFolder(NSString *folder, LFTGroupLayer *groupToAddTo) {
+void addImagesFromFolder(NSString *folder, LFTGroupLayer *groupToAddTo, int depth) {
     
     for (NSString *file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:folder error:nil]) {
         
@@ -53,12 +54,16 @@ void addImagesFromFolder(NSString *folder, LFTGroupLayer *groupToAddTo) {
         BOOL isDir = NO;
         if ([[NSFileManager defaultManager] fileExistsAtPath:fullPathToFile isDirectory:&isDir] && isDir) {
             
+            if (depth >= MAX_DEPTH) {
+                continue;
+            }
+            
             LFTGroupLayer *newGroup = [[LFTGroupLayer alloc] init];
             [newGroup setLayerName:file];
             
             [groupToAddTo addLayer:newGroup];
             
-            addImagesFromFolder(fullPathToFile, newGroup);
+            addImagesFromFolder(fullPathToFile, newGroup, depth + 1);
         }
         else {
             
@@ -114,7 +119,7 @@ int main(int argc, const char * argv[]) {
         
         LFTImage *image = [[LFTImage alloc] init];
         
-        addImagesFromFolder(path, [image baseGroupLayer]);
+        addImagesFromFolder(path, [image baseGroupLayer], 0);
         
         [image setImageSize:maxSize];
         [image setBitsPerComponent:8];
