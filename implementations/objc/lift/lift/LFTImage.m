@@ -10,6 +10,7 @@
 #import "FMDatabaseQueue.h"
 #import "FMDatabaseAdditions.h"
 #import "LFTDatabaseAdditions.h"
+#import <Cocoa/Cocoa.h>
 
 NSString *LFTImageSizeDatabaseTag       = @"imageSize";
 NSString *LFTImageDPITag                = @"dpi";
@@ -150,7 +151,6 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
             [db executeUpdate:@"create table layer_attributes ( id text, name text, value blob)"];
             
             if ([db lastErrorCode] != SQLITE_OK) {
-                NSBeep();
                 NSLog(@"Can't create the lift database at %@", [self databaseURL]);
             }
             

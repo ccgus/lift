@@ -195,7 +195,7 @@ NSString *LFTLayerCompositeUTIDatabaseTag   = @"composite-uti";
     
     NSData *imageData = [self layerImageData];
     
-    if (!imageData) {
+    if (!imageData && ![self isKindOfClass:[LFTGroupLayer class]]) {
         NSLog(@"Warning: no data given for layer %@", self);
     }
     
@@ -241,7 +241,10 @@ NSString *LFTLayerCompositeUTIDatabaseTag   = @"composite-uti";
             }
         }
         else {
-            NSLog(@"Missing image data for %@", self);
+            
+            if (![self isKindOfClass:[LFTGroupLayer class]]) {
+                NSLog(@"Missing image data for %@", self);
+            }
         }
     }
     
