@@ -37,6 +37,8 @@ extern NSString *kUTTypeLiftGroupLayer;
 
 - (NSString*)debugDescription;
 
+- (CGImageRef)composite;
+- (void)setComposite:(CGImageRef)composie;
 
 - (void)addAttribute:(id)attribute withKey:(NSString*)key;
 - (NSDictionary*)attributes;

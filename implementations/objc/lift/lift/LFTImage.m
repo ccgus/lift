@@ -358,13 +358,17 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         
         [db setImageAttribute:LFTImageBitsPerComponentTag withValue:@([self bitsPerComponent])];
         [db setImageAttribute:LFTImageBitsPerPixelTag withValue:@([self bitsPerPixel])];
-        [db setImageAttribute:NSStringFromSize([self dpi]) withValue:LFTImageDPITag];
-        
+        [db setImageAttribute:LFTImageDPITag withValue:NSStringFromSize([self dpi])];
         [db setImageAttribute:LFTImageCreatorSoftwareTag withValue:[self creatorSoftware]];
         
         for (NSString *key in [_atts allKeys]) {
             id value = [_atts objectForKey:key];
             [db setImageAttribute:key withValue:value];
+        }
+        
+        if (_compositeImage) {
+            NSData *d  = [LFTImage dataFromImage:_compositeImage withUTI:(id)kUTTypeTIFF];
+            [db setImageAttribute:@"composite" withValue:d];
         }
         
         [_baseGroup writeToDatabase:db];
@@ -387,6 +391,30 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
 - (LFTGroupLayer*)baseGroupLayer {
     return _baseGroup;
 }
+
+
+- (CGImageRef)composite {
+    return _compositeImage;
+}
+
+- (void)setComposite:(CGImageRef)composie {
+    
+    if (_compositeImage != composie) {
+        if (_compositeImage) {
+            CGImageRelease(_compositeImage);
+        }
+        
+        _compositeImage = composie;
+        
+        if (_compositeImage) {
+            CGImageRetain(_compositeImage);
+        }
+    }
+}
+
+
+
+
 
 + (NSData*)dataFromImage:(CGImageRef)img withUTI:(NSString*)uti {
     
