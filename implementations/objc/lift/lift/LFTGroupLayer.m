@@ -28,7 +28,7 @@
 
 - (LFTLayer*)makeEmptyLayerForUTI:(NSString*)uti {
     
-#pragma message "FIXME: ask a delegate for a layer subclass?  And then if we still don't have one, then make our own."
+    // Maybe ask a delegate for a layer subclass?  And then if we still don't have one, then make our own?
     
     if ([uti isEqualToString:kUTTypeLiftGroupLayer]) {
         return [[LFTGroupLayer alloc] init];
@@ -57,10 +57,16 @@
         NSString *uti  = [rs stringForColumn:@"uti"];
         NSString *name = [rs stringForColumn:@"name"];
         
-        #pragma message "FIXME: validate that the values here are good"
-        
         if (!name) {
             name = @"";
+        }
+        
+        if (!uti) {
+            NSLog(@"Missing UTI for layer %@ / %@", name, uuid);
+        }
+        
+        if (!uuid) {
+            NSLog(@"Missing id for layer %@ / %@", name, uti);
         }
         
         LFTLayer *layer = [self makeEmptyLayerForUTI:uti];;
@@ -77,11 +83,11 @@
     }
     
     
-    // need to load up the masks for the layers now.
+    // TODO: need to load up the masks for the layers now.
     
+    /*
     for (LFTLayer *layer in [self layers]) {
         
-        /*
         NSString *parentId = [NSString stringWithFormat:@"mask-%@", [layer layerId]];
         rs = [db executeQuery:@"select id from layers where parent_id = ? order by sequence asc", parentId];
         
@@ -92,8 +98,8 @@
         }
         
         [rs close];
-        */
     }
+    */
     
 }
 
@@ -101,8 +107,6 @@
     
     if (!_isBase) {
         [super writeToDatabase:db];
-        
-        #pragma message "FIXME: we need to add a group uti to the docs."
         
         [db executeUpdate:@"delete from layers where id = ?", [self layerId]];
         [db executeUpdate:@"insert into layers (id, parent_id, uti, name) values (?,?,?,?)", [self layerId], [self parentLayerId], [self layerUTI], [self layerName]];

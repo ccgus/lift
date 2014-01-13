@@ -198,31 +198,45 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
 
 - (void)setValue:(id)value forAttribute:(NSString*)attributeName {
     
-    #pragma message "FIXME: move the attribute loads into here,and then checks below."
     if ([attributeName isEqualToString:LFTImageSizeDatabaseTag]) {
-        return;
+        assert([value isKindOfClass:[NSString class]]);
+        [self setImageSize:NSSizeFromString(value)];
     }
-    if ([attributeName isEqualToString:LFTImageColorProfileTag]) {
-        return;
+    else if ([attributeName isEqualToString:LFTImageColorProfileTag]) {
+        assert([value isKindOfClass:[NSData class]]);
+        NSData *profileData = value;
+        
+        CGColorSpaceRef cs = CGColorSpaceCreateWithICCProfile((__bridge CFDataRef)profileData);
+        
+        if (cs) {
+            [self setColorSpace:cs];
+        }
+        else {
+            NSLog(@"%s:%d", __FUNCTION__, __LINE__);
+            NSLog(@"Could not turn color profile icc data into a colorspace");
+        }
     }
-    if ([attributeName isEqualToString:LFTImageBitsPerPixelTag]) {
-        return;
+    else if ([attributeName isEqualToString:LFTImageBitsPerPixelTag]) {
+        assert([value isKindOfClass:[NSNumber class]]);
+        [self setBitsPerPixel:[value integerValue]];
     }
-    if ([attributeName isEqualToString:LFTImageBitsPerComponentTag]) {
-        return;
+    else if ([attributeName isEqualToString:LFTImageBitsPerComponentTag]) {
+        assert([value isKindOfClass:[NSNumber class]]);
+        [self setBitsPerComponent:[value integerValue]];
     }
-    if ([attributeName isEqualToString:LFTImageDPITag]) {
-        return;
+    else if ([attributeName isEqualToString:LFTImageDPITag]) {
+        assert([value isKindOfClass:[NSString class]]);
+        [self setDpi:NSSizeFromString(value)];
     }
-    
-    if ([attributeName isEqualToString:LFTImageCreatorSoftwareTag]) {
+    else if ([attributeName isEqualToString:LFTImageCreatorSoftwareTag]) {
         assert([value isKindOfClass:[NSString class]]);
         [self setCreatorSoftware:value];
-        return;
+    }
+    else {
+        [self addAttribute:value withKey:attributeName];
     }
     
     
-    [self addAttribute:value withKey:attributeName];
 }
 
 
@@ -242,57 +256,25 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
             [self setValue:[rs objectForColumnIndex:1] forAttribute:[rs stringForColumnIndex:0]];
         }
 
-        
-        
-        NSString *canvasSizeS = [db stringForImageAttribute:LFTImageSizeDatabaseTag];
-        
-        if (!canvasSizeS) {
+        if ([self imageSize].width <= 0 || [self imageSize].height <= 0) {
             if (err) {
-                *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"No image size in database"}];
-            }
-            goodRead = NO;
-            return;
-        }
-        
-        NSSize size = NSSizeFromString(canvasSizeS);
-        
-        if (size.width <= 0 || size.height <= 0) {
-            if (err) {
-                NSString *errorString = [NSString stringWithFormat:@"Invalid image size: %@", NSStringFromSize(size)];
+                NSString *errorString = [NSString stringWithFormat:@"Invalid image size: %@", NSStringFromSize([self imageSize])];
                 *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: errorString}];
             }
             goodRead = NO;
             return;
         }
         
-        [self setImageSize:size];
         
-        NSData *profileData = [db dataForImageAttribute:LFTImageColorProfileTag];
-        if (!profileData) {
+        if (![self colorSpace]) {
             if (err) {
-                *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"Missing color profile in database"}];
+                *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"Missing or invalid color profile in database"}];
             }
             goodRead = NO;
             return;
         }
         
-        // echo "insert into image_attributes(name, value) values('iccColorProfile', x'"$(hexdump -v -e '1/1 "%02x"' /System/Library/ColorSync/Profiles/sRGB\ Profile.icc)"');"
-        CGColorSpaceRef cs = CGColorSpaceCreateWithICCProfile((__bridge CFDataRef)profileData);
-        
-        if (!cs) {
-            
-            if (err) {
-                *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"Could not turn color profile icc data into a colorspace"}];
-            }
-            goodRead = NO;
-            return;
-        }
-        
-        [self setColorSpace:cs];
-        
-        
-        _bitsPerComponent = [db intForImageAttribute:LFTImageBitsPerComponentTag];
-        if (!_bitsPerComponent) {
+        if (_bitsPerComponent < 1) {
             
             if (err) {
                 *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"Bits per component tag is missing or invalid"}];
@@ -301,8 +283,7 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
             return;
         }
         
-        _bitsPerPixel = [db intForImageAttribute:LFTImageBitsPerPixelTag];
-        if (!_bitsPerPixel) {
+        if (_bitsPerPixel < 1) {
             
             if (err) {
                 *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"Bits per pixel tag is missing or invalid"}];
@@ -310,12 +291,6 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
             goodRead = NO;
             return;
         }
-        
-        NSSize dpi = NSSizeFromString([db stringForImageAttribute:LFTImageDPITag]);
-        if (dpi.width > 0 && dpi.height > 0) {
-            [self setDpi:dpi];
-        }
-        
         
         [_baseGroup setLayerName:[NSString stringWithFormat:@"%@'s base group", [_databaseURL lastPathComponent]]];
         
@@ -327,6 +302,15 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
 }
 
 - (BOOL)writeToURL:(NSURL*)url  error:(NSError**)err {
+    
+    if ([self imageSize].width < 1 || [self imageSize].height < 1) {
+        if (err) {
+            *err = [NSError errorWithDomain:kUTTypeLiftImage code:1 userInfo:@{NSLocalizedDescriptionKey: @"Invalid image size"}];
+        }
+        
+        return NO;
+    }
+    
     
     [self setDatabaseURL:url];
     
@@ -342,11 +326,7 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
     
     [self setupTables];
     
-    
-    #pragma message "FIXME: make sure our size and such are valid."
-    
-    
-    [_q inDatabase:^(FMDatabase *db) {
+    [_q inTransaction:^(FMDatabase *db, BOOL *rollback) {
     
         [db setImageAttribute:LFTImageSizeDatabaseTag withValue:NSStringFromSize([self imageSize])];
         

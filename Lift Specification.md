@@ -8,6 +8,8 @@ There are three tables in a lift image - image_attributes, layers, and layer_att
 
 All fields are case sensitive and any text is stored as UTF-8.
 
+File extension is '.lift', and the UTI is 'org.liftimage.lift'
+
 # image_attributes
 `create table image_attributes (name text, value blob)`  
 The image_attributes table is a key value store for attributes on the image.  Things like color space, image size (in pixels), dpi, bits per component, and even a composite of all the layers.
@@ -44,6 +46,8 @@ The data field is the data for the layer.
 
 If the layer data is stored as TIFF then the UTI would be 'public.tiff'.  PNG would be 'public.png'.  It is recommended that the layer data not be stored in a lossy format (such as JPEG).
 
+The UTI for group layers is 'org.liftimage.grouplayer'
+
 If the layer data is proprietary, then you would come up with your own UTI.  For instance, Acorn stores its shape layer data in a proprietary format and uses the UTI of 'com.flyingmeat.acorn.shape-layer'.
 
 # layer_attributes
@@ -77,15 +81,15 @@ The layer_attributes table stores key value information for a single layer.
 If an application which provides features such as non-destructive filters on layers (also known as layer styles), should a composite of the layer be stored as an attribute of the layer?  And if it does, maybe a specific key should be used?  Maybe 'lift.composite' and 'lift.composite-uti' to store the uti of the composite (tiff/jpeg/png)?
 
 **Intercaps, dashes, or underscores?**  
-Table names can't have dashes, but they can have intercaps or underscores.
+Table names can't have dashes, but they can have intercaps or underscores.  
 Apple's UTIs have dashes in them, and never use intercaps.
 
-SO, should the key for a blend mode be:
-'blendMode'
-'blend_mode'
-'blend-mode'
+SO, should the key for a blend mode be:  
+'blendMode'  
+'blend_mode'  
+'blend-mode'  
 
-AND - should it have a lift prefix on it?
+AND - should it have a lift prefix on it?  
 'lift.blend-mode' ?
 
 
