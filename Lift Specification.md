@@ -58,10 +58,11 @@ The layer_attributes table stores key value information for a single layer.
 
 ### Required rows for layer_attributes
 
-**frame**: If the layer is a bitmap (such as TIFF or PNG) then a frame key is required.  It is a string in the format of {xOrigin, yOrigin, width, height}.  For example: {0, 0, 800, 600} or {-10, 46, 100, 1230}.  
-*Spec Note* - maybe this should be optional, and default to a origin of 0,0 and width/height of the layer image if the frame is not present?
+…
 
 ### Optional rows for layer_attributes
+
+**frame**: If the layer is a bitmap (such as TIFF or PNG) then a frame row is highly recommended.  It is a string in the format of {xOrigin, yOrigin, width, height}.  For example: {0, 0, 800, 600} or {-10, 46, 100, 1230}.  If not present, then it readers must default to a origin of 0,0 and width/height of the layer image.
 
 **visible**: A boolean value (1|0) which lets an app know if the layer should be composited with the rest of the layers.
 
@@ -93,5 +94,11 @@ SO, should the key for a blend mode be:
 
 AND - should it have a lift prefix on it?  
 'lift.blend-mode' ?
+
+
+
+file version info should be stored outside image_attributes.
+Do we need a 'document_attributes' table which would describe the particular format, the author, copyright, etc?
+
 
 
