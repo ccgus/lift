@@ -31,7 +31,7 @@ The image_attributes table is a key value store for attributes on the image.  Th
 If no dpi key is present, the default value of {72,72} will be assumed.
 
 ### Vendor Specific Keys
-Any other keys placed in the image_attributes are not required and can either be ignored or used for vendor specific purposes.  It is required that you prefix your keys with the name of your application so that application specific keys will not interfere  with future versions of the lift spec.  For example, Acorn stores a setting for the blend mode of it's grid.  This key is stored as 'acorn.gridBlendMode'
+Any other keys placed in the image_attributes are not required and can either be ignored or used for vendor specific purposes.  It is required that you prefix your keys with the bundle id / reverse domain name of your application so that application specific keys will not interfere with future versions of the lift spec.  For example, Acorn stores a setting for the blend mode of it's grid.  This key is stored as 'com.flyingmeat.acorn.gridBlendMode'
 
 
 # layers
