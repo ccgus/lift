@@ -16,3 +16,9 @@ http://groups.google.com/group/lift-dev
 
 # Spec
 See the file "Lift Specification" for information on creating and reading a lift image.
+
+# How to help
+
+A reference Python implementation is needed.
+
+An importer and exporter for Photoshop would be great to have.
