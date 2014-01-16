@@ -18,13 +18,14 @@ The image_attributes table is a key value store for attributes on the image.  Th
 
 **imageSize**: This is used to store the dimensions of the image in the format {width,height}.  For example, '{900,600}' would the the size of an image that is 900 pixels wide and 600 pixels high.
 
+**iccColorProfile**: The ICC profile data for the image.
+
+**Optional rows for image_attributes**
+
 **bitsPerComponent**: A single unsigned integer storing the number of bits used per component in the image.
 
 **bitsPerPixel**: A single unsigned integer storing the number of bits per pixel for the image.
 
-**iccColorProfile**: The ICC profile data for the image.
-
-**Optional rows for image_attributes**
 **composite**: A bitmap composite of all the visible layers (recommended to be stored as a tiff or png image)
 **composite-uti**: The UTI of the image composite.
 
