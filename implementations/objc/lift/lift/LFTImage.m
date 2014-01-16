@@ -349,7 +349,10 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         if (_compositeImage) {
             NSData *d  = [LFTImage dataFromImage:_compositeImage withUTI:(id)kUTTypeTIFF];
             [db setImageAttribute:@"composite" withValue:d];
+            [db setImageAttribute:@"composite-uti" withValue:(id)kUTTypeTIFF];
+            
         }
+        
         
         [_baseGroup writeToDatabase:db];
     }];

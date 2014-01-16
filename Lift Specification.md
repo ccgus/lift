@@ -25,7 +25,8 @@ The image_attributes table is a key value store for attributes on the image.  Th
 **iccColorProfile**: The ICC profile data for the image.
 
 **Optional rows for image_attributes**
-**composite**: A composite of all the visible layers stored as a tiff or png image.
+**composite**: A bitmap composite of all the visible layers (recommended to be stored as a tiff or png image)
+**composite-uti**: The UTI of the image composite.
 
 **dpi**: The dots per inch for the composited image, stored in the format of '{dpiwidth,dpiheight}'.  For example '{72,72}'.
 If no dpi key is present, the default value of {72,72} will be assumed.
