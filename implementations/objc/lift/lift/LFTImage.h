@@ -19,14 +19,13 @@ extern NSString *kUTTypeLiftGroupLayer;
 
 
 @interface LFTImage : NSObject {
-    
+    CGColorSpaceRef _colorSpace;
 }
 
 @property (assign) NSSize           imageSize;
 @property (assign) NSUInteger       bitsPerComponent;
 @property (assign) NSUInteger       bitsPerPixel;
 @property (assign) NSSize           dpi;
-@property (assign) CGColorSpaceRef  colorSpace;
 @property (strong) NSString         *creatorSoftware;
 
 + (instancetype)imageWithContentsOfURL:(NSURL*)u error:(NSError**)err;
@@ -42,6 +41,9 @@ extern NSString *kUTTypeLiftGroupLayer;
 
 - (void)addAttribute:(id)attribute withKey:(NSString*)key;
 - (NSDictionary*)attributes;
+
+- (void)setColorSpace:(CGColorSpaceRef)cs;
+- (CGColorSpaceRef)colorSpace;
 
 + (NSData*)dataFromImage:(CGImageRef)img withUTI:(NSString*)uti;
 

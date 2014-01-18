@@ -210,6 +210,7 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         
         if (cs) {
             [self setColorSpace:cs];
+            CGColorSpaceRelease(cs);
         }
         else {
             NSLog(@"%s:%d", __FUNCTION__, __LINE__);
@@ -396,7 +397,24 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
 }
 
 
+- (void)setColorSpace:(CGColorSpaceRef)cs {
+    
+    if (_colorSpace != cs) {
+        if (_colorSpace) {
+            CGColorSpaceRelease(_colorSpace);
+        }
+        
+        _colorSpace = cs;
+        
+        if (_colorSpace) {
+            CGColorSpaceRetain(_colorSpace);
+        }
+    }
+}
 
+- (CGColorSpaceRef)colorSpace {
+    return _colorSpace;
+}
 
 
 + (NSData*)dataFromImage:(CGImageRef)img withUTI:(NSString*)uti {
