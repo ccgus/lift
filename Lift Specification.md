@@ -37,7 +37,7 @@ Any other keys placed in the image_attributes are not required and can either be
 
 
 # layers
-`create table layers (id text, parent_id text, sequence integer, uti text, name text, composite blob)`  
+`create table layers (id text, parent_id text, sequence integer, uti text, name text, data blob)`  
 The layers table stores basic information about a single layer in the image.  
 The id field is a UUID string for the layer.  
 The parent_id is the UUID of the layer group this layer is enclosed by.  If parent_id is null, then the layer is a top level layer.  
