@@ -11,6 +11,7 @@
 #import "FMDatabaseAdditions.h"
 #import "LFTDatabaseAdditions.h"
 #import <Cocoa/Cocoa.h>
+#import <sqlite3.h>
 
 NSString *LFTImageSizeDatabaseTag       = @"imageSize";
 NSString *LFTImageDPITag                = @"dpi";
