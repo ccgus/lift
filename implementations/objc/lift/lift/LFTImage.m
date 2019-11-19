@@ -207,7 +207,7 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
         assert([value isKindOfClass:[NSData class]]);
         NSData *profileData = value;
         
-        CGColorSpaceRef cs = CGColorSpaceCreateWithICCProfile((__bridge CFDataRef)profileData);
+        CGColorSpaceRef cs = CGColorSpaceCreateWithICCData((__bridge CFDataRef)profileData);
         
         if (cs) {
             [self setColorSpace:cs];
@@ -332,7 +332,7 @@ NSString *kUTTypeLiftGroupLayer = @"org.liftimage.grouplayer";
     
         [db setImageAttribute:LFTImageSizeDatabaseTag withValue:NSStringFromSize([self imageSize])];
         
-        NSData *iccData = CFBridgingRelease(CGColorSpaceCopyICCProfile([self colorSpace]));
+        NSData *iccData = CFBridgingRelease(CGColorSpaceCopyICCData([self colorSpace]));
         if (iccData) {
             [db setImageAttribute:LFTImageColorProfileTag withValue:iccData];
         }
